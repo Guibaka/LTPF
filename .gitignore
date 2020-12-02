@@ -1,0 +1,4 @@
+exec/
+obj/
+src/*~
+includes/*~

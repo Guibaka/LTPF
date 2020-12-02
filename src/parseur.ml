@@ -137,15 +137,15 @@ end
 
 (* TEST du module Parseur *)
 
-let exp1 = "a:=1;"
+let exp1 = "a:=1"
 let test_exp1 = Parseur.list_of_string exp1
 let ranalist_exp1 = Parseur.p_S test_exp1
 
-let exp2 = "b:=1;"
+let exp2 = "b:=1"
 let test_exp2 = Parseur.list_of_string exp2
 let ranalist_exp2 = Parseur.p_S test_exp2
 
-let exp3 = "c:=1;"
+let exp3 = "c:=1"
 let test_exp3 = Parseur.list_of_string exp3
 let ranalist_exp3 = Parseur.p_S test_exp3
 

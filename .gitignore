@@ -2,3 +2,4 @@ exec/
 obj/
 src/*~
 includes/*~
+sos/*~

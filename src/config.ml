@@ -23,7 +23,7 @@ module Config =
     let rec faire_un_pas (instr : P.instr) (state : S.state) : config =
       match instr with
       |P.Skip -> Final(state)
-      |P.Assign(v1, v2) -> Final(state)
+      |P.Assign(v1, v2) -> let a = (S.execAffect instr state ) in Final(a)
       |P.Seq(i1, i2) -> (match (faire_un_pas i1 state) with
                          |Inter(i, s) -> Inter(P.Seq(i1,i2), s)
                          |Final(s) -> Final(s)
@@ -38,7 +38,7 @@ module Config =
       |Final(s) -> (print_string "Final "); (S.printState s)
   end
 
-
+(*
 module C = Config
 
 let exp1 = "a:=1"
@@ -67,3 +67,4 @@ let test_While = P.list_of_string m_While
 let ranalist_While = P.p_I test_While
 let (ast, l) = ranalist_While
 let _ = P.printInstr ast
+ *)

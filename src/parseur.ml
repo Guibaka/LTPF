@@ -174,6 +174,7 @@ end
 
 (* TEST du module Parseur *)
 
+(*
 let exp1 = "a:=1"
 let test_exp1 = Parseur.list_of_string exp1
 let ranalist_exp1 = Parseur.p_S test_exp1
@@ -192,12 +193,15 @@ let ranalist_exp3 = Parseur.p_S test_exp3
 let (ast, l) = ranalist_exp3
 let _ = Parseur.printInstr ast
 
+let deba = "a:=0;"
+let debb = "b:=0;"
+let debc = "c:=1;"
 let condIf = "i(c)"
 let corpsIf1 = "{c:=0;a:=b}"
 let corpsIf2 = "{b:=0;c:=a}"
-let m_If = condIf^corpsIf1^corpsIf2
+let m_If = deba^debb^debc^condIf^corpsIf1^corpsIf2
 let test_If = Parseur.list_of_string m_If
-let ranalist_If = Parseur.p_I  test_If
+let ranalist_If = Parseur.p_S  test_If
 let (ast, l) = ranalist_If
 let _ = Parseur.printInstr ast
 
@@ -214,3 +218,4 @@ let list_test_fun = Parseur.list_of_string test_fun
 let ranalist_Fonct = Parseur.p_S list_test_fun
 let (ast, l) = ranalist_Fonct
 let _ = Parseur.printInstr ast
+ *)

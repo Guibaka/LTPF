@@ -17,7 +17,7 @@ $(OBJ_DIR) :
 $(BIN_DIR) :
 	$(MKDIR) $(BIN_DIR)
 	
-main :  $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo
+main :  $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo $(OBJ_DIR)/exec.cmo
 	$(CC) $^ -o $(BIN_DIR)/$@
 	
 $(OBJ_DIR)/state.cmi : $(LIB_DIR)/state.mli $(OBJ_DIR)/parseur.cmi
@@ -36,6 +36,9 @@ $(OBJ_DIR)/parseur.cmo : $(SRC_DIR)/parseur.ml $(OBJ_DIR)/parseur.cmi
 	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
 $(OBJ_DIR)/config.cmo : $(SRC_DIR)/config.ml $(OBJ_DIR)/config.cmi $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo 
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
+	
+$(OBJ_DIR)/exec.cmo : $(SRC_DIR)/exec.ml $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo
 	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
 clean :

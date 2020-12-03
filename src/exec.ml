@@ -6,29 +6,42 @@ module P = Parseur
 module S = State
 module C = Config
 
-let exp1 = "a:=1"
-let test_exp1 = P.list_of_string exp1
-let ranalist_exp1 = P.p_S test_exp1
-let (ast, l) = ranalist_exp1
-let _ = P.printInstr ast
 
-let s = S.End
-let c = (C.faire_un_pas ast s)
-let _ = C.printConfig c
 
-let condIf = "i(c)"
-let corpsIf1 = "{c:=0;a:=b}"
-let corpsIf2 = "{b:=0;c:=a}"
-let m_If = condIf^corpsIf1^corpsIf2
-let test_If = P.list_of_string m_If
-let ranalist_If = P.p_I  test_If
-let (ast, l) = ranalist_If
-let _ = P.printInstr ast
+(*let rec executer_aux (state : S.state) (config: C.config) = *)
+  
 
-let condW = "w(a)"
-let corpsW = "{"^m_If^"}"
+(*
+
+let rec executer_aux (config : C.config) =
+  match config with
+  |C.Inter(instr, s) ->  (executer_aux (C.faire_un_pas instr s)) (* in (C.printConfig a)*)
+  |C.Final(s) -> S.End
+
+
+let executer (funct : string) =
+  let list_funct = P.list_of_string funct in
+  let (instr, l) = P.p_S list_funct in
+  let config = C.Inter(instr, (S.State('a', 0, (State('b', 0, (State('c', 0, End))))))) in
+  (executer_aux config)
+
+
+let _ = print_string "TEST avec While(1){a:=1}\n"
+let condW = "w(1)"
+let corpsW = "{"^"a:=1"^"}"
 let m_While = condW^corpsW
-let test_While = P.list_of_string m_While
-let ranalist_While = P.p_I test_While
-let (ast, l) = ranalist_While
-let _ = P.printInstr ast
+let test_executer = executer m_While
+ *)
+
+
+
+let _ = print_string "TEST avec While(1){a:=1}\n"
+let condW = "w(1)"
+let corpsW = "{"^"a:=1"^"}"
+let m_While = condW^corpsW
+let list_While = P.list_of_string m_While
+let (instr, l) = P.p_S list_While
+let config = C.Inter(instr, (S.State('a', 0, (State('b', 0, (State('c', 0, End)))))))
+
+
+

@@ -43,7 +43,21 @@ module State =
       |State(statevar, statevalue, next) ->  if (var = statevar) then State(statevar, value, next)
                                              else State(statevar, statevalue, (change var value next))
 
-    (*
+
+    let execAffect (i : P.instr) (s: state) : (state) =
+      match i with
+      |P.Assign(Var(variable), valu) -> (match valu with
+                                         |Var(a) -> (change variable (read a s) s)
+                                         |Cst(a) -> (change variable a s)
+                                        )
+      |_ -> raise NotFound
+    
+    let rec printState (s : state) =
+      match s with
+      |End -> print_string "End\n"
+      |State(c,i,s) -> (print_char c) ; (print_string " ") ; (print_int i) ; (print_string " \n") ; (printState s)
+          
+   (*
     let charToExp (var: char) : (P.exp) =
       match var with
       |'a' -> P.Var(A)
@@ -80,23 +94,9 @@ module State =
       |_ -> raise NotFound
      *)
 
-    let execAffect (i : P.instr) (s: state) : (state) =
-      match i with
-      |P.Assign(Var(variable), valu) -> (match valu with
-                                         |Var(a) -> (change variable (read a s) s)
-                                         |Cst(a) -> (change variable a s)
-                                        )
-      |_ -> raise NotFound
-    
-    let rec printState (s : state) =
-      match s with
-      |End -> print_string "End\n"
-      |State(c,i,s) -> print_char c ; print_string " " ; print_int i ; print_string " \n" ; (printState s)
-          
-    
 end
 
-
+(*
 module S = State
 
 let s1 : S.state = S.State('a', 2, End)
@@ -119,3 +119,4 @@ let exp1 = "a:=1"
 let test_exp1 = P.list_of_string exp1
 let ranalist_exp1 = P.p_S test_exp1
 let test_execAffect = S.execAffect 
+ *)

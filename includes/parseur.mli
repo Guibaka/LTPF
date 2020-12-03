@@ -21,5 +21,8 @@ sig
   val p_S : (instr, char) ranalist
   val p_L : (instr, char) ranalist
   val p_I : (instr, char) ranalist
-  
+  val printInstr : instr
+  val printVar : exp
+  val printExp : exp
+  val printCst : exp
 end

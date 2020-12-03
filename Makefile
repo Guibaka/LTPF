@@ -17,8 +17,7 @@ $(OBJ_DIR) :
 $(BIN_DIR) :
 	$(MKDIR) $(BIN_DIR)
 	
-main : $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo 
-	@echo "Compiling analyser\n"
+main : $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo
 	$(CC) $^ -o $(BIN_DIR)/$@
 	
 $(OBJ_DIR)/state.cmi : $(LIB_DIR)/state.mli $(OBJ_DIR)/parseur.cmi
@@ -40,7 +39,6 @@ $(OBJ_DIR)/config.cmo : $(SRC_DIR)/config.ml $(OBJ_DIR)/config.cmi $(OBJ_DIR)/pa
 	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
 clean :
-	@echo "Cleaning obj dir and bin dir\n"
 	rm -r $(OBJ_DIR)/
 	rm -r $(BIN_DIR)/
 

@@ -10,6 +10,7 @@ module Config =
                   | Final of (S.state)
 
 
+    
     (* Création d'un fonction eval pour les booléens *)
     let eval (exp : P.exp) (s: S.state) : (bool) =
       match exp with
@@ -29,5 +30,11 @@ module Config =
                         )
       (* ici il faudra évaluer e, si c'est vrai ou faux on fait l'instruction i/i1/i2 *)
       |P.If(e, i1, i2) -> if (eval e state) then Inter(i1, state) else Inter(i2, state)
-      |P.While(e, i) ->  Inter(P.If(e, P.Seq(i, P.While(e,i)), P.Skip),  state ) 
+      |P.While(e, i) ->  Inter(P.If(e, P.Seq(i, P.While(e,i)), P.Skip),  state )
+
+    let printConfig (c : config) =
+      match c with
+      |Inter(i, s) -> (print_string "Inter ") ; (P.printInstr i) ; (S.printState s)
+      |Final(s) -> (print_string "Final "); (S.printState s)
   end
+

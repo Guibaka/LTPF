@@ -13,5 +13,5 @@ module State :
     val read : char -> state -> int
     val change : char -> int -> state -> state
     val execAffect : P.instr -> state -> state
-    
+    val printState : state
   end

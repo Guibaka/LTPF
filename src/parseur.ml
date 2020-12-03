@@ -154,8 +154,21 @@ let printVar (var : exp) =
   |Var(a) -> print_char a
   |_ -> raise Echec
 
+let printCst (entier: exp) =
+  match entier with
+  |Cst(a) -> print_int a
+  |_ -> raise Echec
 
+let printExp (e: exp) =
+  try (printVar e) with Echec -> (printCst e)
 
+let rec printInstr (i : instr) =
+  match i with
+  |Skip -> print_string "Skip\n"
+  |Assign(var, value) -> (printVar var) ; print_string " := "; (printCst value) ; print_string "\n"
+  |If(exp, i1, i2) -> (print_string "If(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i1) ; (print_string "}{") ; (printInstr i2) ; (print_string "}\n")
+  |While(exp, i) -> (print_string "While(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i) ; (print_string "}\n")
+  |Seq(i1,i2) -> (print_string "Seq{"); (printInstr i1); (print_string "}{") ; (printInstr i2); (print_string "}\n") 
 end
 
 
@@ -164,14 +177,20 @@ end
 let exp1 = "a:=1"
 let test_exp1 = Parseur.list_of_string exp1
 let ranalist_exp1 = Parseur.p_S test_exp1
+let (ast, l) = ranalist_exp1
+let _ = Parseur.printInstr ast
 
 let exp2 = "b:=1"
 let test_exp2 = Parseur.list_of_string exp2
 let ranalist_exp2 = Parseur.p_S test_exp2
+let (ast, l) = ranalist_exp2
+let _ = Parseur.printInstr ast
 
 let exp3 = "c:=1"
 let test_exp3 = Parseur.list_of_string exp3
 let ranalist_exp3 = Parseur.p_S test_exp3
+let (ast, l) = ranalist_exp3
+let _ = Parseur.printInstr ast
 
 let condIf = "i(c)"
 let corpsIf1 = "{c:=0;a:=b}"
@@ -179,13 +198,19 @@ let corpsIf2 = "{b:=0;c:=a}"
 let m_If = condIf^corpsIf1^corpsIf2
 let test_If = Parseur.list_of_string m_If
 let ranalist_If = Parseur.p_I  test_If
+let (ast, l) = ranalist_If
+let _ = Parseur.printInstr ast
 
 let condW = "w(a)"
 let corpsW = "{"^m_If^"}"
 let m_While = condW^corpsW
 let test_While = Parseur.list_of_string m_While
 let ranalist_While = Parseur.p_I test_While
+let (ast, l) = ranalist_While
+let _ = Parseur.printInstr ast
 
 let test_fun = exp1^exp2^exp3^m_While
 let list_test_fun = Parseur.list_of_string test_fun
 let ranalist_Fonct = Parseur.p_S list_test_fun
+let (ast, l) = ranalist_Fonct
+let _ = Parseur.printInstr ast

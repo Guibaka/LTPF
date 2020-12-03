@@ -187,12 +187,12 @@ Theorem SOS_trans : forall c1 c2 c3, SOS c1 c2 -> SOS c2 c3 -> SOS c1 c3.
 Proof.
   intros c1 c2 c3.
   intros i1 i2.
-  induction c1 as [ ].
-  - eapply SOS_again.
-    induction w as [].
-    -- apply SOS_Skip.
-    -- admit.     
-Admitted.
+  induction i1 as [].
+  -apply i2.
+  -eapply SOS_again.
+   {apply H.   }
+   apply IHi1. apply i2.
+Qed.
 
 
 (*Exerice 13*)
@@ -402,23 +402,12 @@ Theorem SOS_Pcarre_inf_n :
   forall i,
   SOS (Inter Pcarre_inf [0; 0; 1]) (Inter Pcarre_inf (invar_cc i)).
 Proof.
-  intro i.
-  (*
-  eapply SOS_again.
-  {cbv[Pcarre_inf]. apply SOS_While.  }
-  eapply SOS_again.
-  {apply SOS_If_true. cbn. reflexivity.  }
-  eapply SOS_again.
-  {apply SOS_Seqi. cbv[corps_carre]. apply SOS_Seqf. apply SOS_Assign.  }
-  eapply SOS_again.
-  {cbn. apply SOS_Seqi. apply SOS_Seqf. apply SOS_Assign. }
-   eapply SOS_again.
-  {cbn. apply SOS_Seqf. apply SOS_Assign.  }
-  cbn. 
-   *)
-  (*Je pense qu'il faut utiliser cette fonction mais ca marche pas go demander a LULU*)
-  (*apply SOS_corps_carre_inter i n.*)
-Admitted.
+  induction i as [].
+  -cbv[invar_cc].  cbn. apply SOS_stop.
+  -cbv[invar_cc].  eapply SOS_trans.
+   -- apply IHi.
+   --apply SOS_Pcarre_inf_tour.
+Qed. 
 
 (** Énoncer et démontrer le théorème général pour Pcarre *)
 
@@ -434,6 +423,7 @@ Inductive config :=
 
 (** Définir une version fonctionnelle de SOS_1 *)
 Fixpoint f_SOS_1 (i : Winstr) (s : state) : config :=
+  
                                               
 Admitted.
 

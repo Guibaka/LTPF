@@ -12,7 +12,12 @@ module Config =
 
     (* Création d'un fonction eval pour les booléens *)
     let eval (exp : P.exp) (s: S.state) : (bool) =
-      if((S.read (S.expToChar exp) s) = 1) then true else false
+      match exp with
+      |Var(a) -> (match (S.read a s) with
+                  |0 -> false
+                  |_ -> true
+                 )
+      |Cst(a) -> if a=0 then false else true
     
     let rec faire_un_pas (instr : P.instr) (state : S.state) : config =
       match instr with

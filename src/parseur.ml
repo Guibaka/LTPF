@@ -35,7 +35,7 @@ module Parseur =
 struct
 type v = A | B | C | D
 type c = Zero | Un
-type exp = Var of v | Cst of c
+type exp = Var of char | Cst of int
 type instr =
   | Skip
   | Assign of exp * exp
@@ -80,7 +80,7 @@ let terminal c : 't analist = fun l -> match l with
                                        | x :: l when x = c -> l
                                        | _ -> raise Echec
 
-
+(*
 let p_E : ('r, 't) ranalist = fun l ->
   match l with
   |'a' :: l -> (Var(A), l)
@@ -98,7 +98,23 @@ let p_V : ('r, 't) ranalist = fun l ->
   |'c' :: l -> (Var(C), l)
   |'d' :: l -> (Var(D), l)
   |_-> raise Echec
+ *)
 
+
+
+let p_C :  ('r, 't) ranalist = fun l ->
+  match l with
+  |'0'::l -> (Cst(0), l )
+  |'1'::l -> (Cst(1), l)
+  |_ -> raise Echec
+
+let p_V : ('r, 't) ranalist = fun l ->
+  match l with
+  |a :: l -> (Var(a), l)
+  |_-> raise Echec
+
+let p_E : ('r, 't) ranalist = fun l ->
+  try (p_C l) with Echec -> (p_V l)
 
 (*S ::= IL | ε
   L ::= ;S | ε
@@ -132,6 +148,14 @@ let rec p_S : (instr, char) ranalist = fun l->
                       fun b -> terminal '}' +> (return (While(a,b))))
       +|
         (return Skip)
+
+let printVar (var : exp) =
+  match var with
+  |Var(a) -> print_char a
+  |_ -> raise Echec
+
+
+
 end
 
 

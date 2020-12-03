@@ -17,6 +17,7 @@ sig
   val terminal : 't -> 't analist
   
   val p_E : (exp, char) ranalist
+  val p_V : (exp, char) ranalist
   val p_S : (instr, char) ranalist
   val p_L : (instr, char) ranalist
   val p_I : (instr, char) ranalist

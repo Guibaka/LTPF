@@ -39,10 +39,11 @@ module State =
        la nouvelle valeur                                                                *)
     let rec change (var: char) (value: int) (s: state) : (state) =
       match s with
-      |End -> raise NotFound
+      |End -> State(var, value, End)
       |State(statevar, statevalue, next) ->  if (var = statevar) then State(statevar, value, next)
                                              else State(statevar, statevalue, (change var value next))
 
+    (*
     let charToExp (var: char) : (P.exp) =
       match var with
       |'a' -> P.Var(A)
@@ -61,7 +62,7 @@ module State =
       |_ -> raise NotFound
      
     
-   (* Executation d'affectation : ca fonctionne peut être ? *)
+    (* Executation d'affectation : ca fonctionne peut être ? *)
     let  execAffect (i : P.instr) (s: state) : (state) =
       match i with
       |P.Assign(var, valu) ->
@@ -77,5 +78,44 @@ module State =
                      )
         )
       |_ -> raise NotFound
+     *)
+
+    let execAffect (i : P.instr) (s: state) : (state) =
+      match i with
+      |P.Assign(Var(variable), valu) -> (match valu with
+                                         |Var(a) -> (change variable (read a s) s)
+                                         |Cst(a) -> (change variable a s)
+                                        )
+      |_ -> raise NotFound
+    
+    let rec printState (s : state) =
+      match s with
+      |End -> print_string "End\n"
+      |State(c,i,s) -> print_char c ; print_string " " ; print_int i ; print_string " \n" ; (printState s)
+          
     
 end
+
+
+module S = State
+
+let s1 : S.state = S.State('a', 2, End)
+let s1 = S.init s1
+let _ = print_string "Test init"
+let test_init  = S.printState s1 ; print_string "\n \n \n"
+
+
+let s2 = S.State('a', 1, S.State('b', 2, S.State('c', 3, End)))
+let _ = print_string "Test read\n"
+let test_read = print_int (S.read 'c' s2) ; print_string "\n \n \n"
+
+let _ = print_string "Test change\n"
+let _ = print_string "s2 avant \n"
+let _ = S.printState s2
+let _ = print_string "s2 apres \n"
+let test_change = S.printState (S.change 'c' 0 s2 )
+
+let exp1 = "a:=1"
+let test_exp1 = P.list_of_string exp1
+let ranalist_exp1 = P.p_S test_exp1
+let test_execAffect = S.execAffect 

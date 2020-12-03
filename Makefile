@@ -17,7 +17,7 @@ $(OBJ_DIR) :
 $(BIN_DIR) :
 	$(MKDIR) $(BIN_DIR)
 	
-main : $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo
+main :  $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo
 	$(CC) $^ -o $(BIN_DIR)/$@
 	
 $(OBJ_DIR)/state.cmi : $(LIB_DIR)/state.mli $(OBJ_DIR)/parseur.cmi

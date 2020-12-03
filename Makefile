@@ -17,22 +17,26 @@ $(OBJ_DIR) :
 $(BIN_DIR) :
 	$(MKDIR) $(BIN_DIR)
 	
-main : $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/funUtil.cmo 
+main : $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo 
 	@echo "Compiling analyser\n"
 	$(CC) $^ -o $(BIN_DIR)/$@
 	
-	
-$(OBJ_DIR)/funUtil.cmi : $(LIB_DIR)/funUtil.mli $(OBJ_DIR)/parseur.cmi
+$(OBJ_DIR)/state.cmi : $(LIB_DIR)/state.mli $(OBJ_DIR)/parseur.cmi
 	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
 $(OBJ_DIR)/parseur.cmi : $(LIB_DIR)/parseur.mli
 	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 	
+$(OBJ_DIR)/config.cmi : $(LIB_DIR)/config.mli $(OBJ_DIR)/parseur.cmi $(OBJ_DIR)/state.cmi
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 	
-$(OBJ_DIR)/funUtil.cmo : $(SRC_DIR)/funUtil.ml $(OBJ_DIR)/funUtil.cmi $(OBJ_DIR)/parseur.cmo
+$(OBJ_DIR)/state.cmo : $(SRC_DIR)/state.ml $(OBJ_DIR)/state.cmi $(OBJ_DIR)/parseur.cmo
 	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
 $(OBJ_DIR)/parseur.cmo : $(SRC_DIR)/parseur.ml $(OBJ_DIR)/parseur.cmi
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
+
+$(OBJ_DIR)/config.cmo : $(SRC_DIR)/config.ml $(OBJ_DIR)/config.cmi $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo 
 	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
 clean :

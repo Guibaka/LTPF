@@ -14,9 +14,9 @@ let rec printList (l : char list) =
 
 
 let rec executer_aux (config : C.config) (nbPas : int) =
-  let _ = read_line () in 
+  let _ = (print_string "\n \n \n \n \n"); read_line () in 
   match config with
-  |C.Inter(instr, s) -> let _ = (print_string "Step : ") ; (print_int nbPas) ; (print_string "\n" ) in let _ = (print_string "Sate :\n") ; (S.printState s) in let _ = (print_string "Instruction :\n ");(P.printInstr instr) in  (executer_aux (C.faire_un_pas instr s) (nbPas+1)) 
+  |C.Inter(instr, s) -> let _ = (print_string "Step :\n") ; (print_int nbPas) ; (print_string "\n \n" ) in let _ = (print_string "Sate :\n") ; (S.printState s) in let _ = (print_string "Instruction :\n ");(P.printInstr instr) in  (executer_aux (C.faire_un_pas instr s) (nbPas+1)) 
   |C.Final(s) -> (config, nbPas)
 
 
@@ -26,7 +26,7 @@ let executer (funct : string) =
   let list_funct = P.list_of_string funct in
   let (instr, l) = P.p_S list_funct in
   let config = C.Inter(instr, (S.State('a', 0, (State('b', 0, (State('c', 0, End))))))) in
-  let (config, nbPas) = (executer_aux config 0) in (print_string "Nombre de pas : "); (print_int nbPas); (print_string "\n")
+  let (config, nbPas) = (executer_aux config 0) in (print_string "Nombre de pas total: "); (print_int nbPas); (print_string "\n")
 
 
 
@@ -36,7 +36,7 @@ let condW = "while(a)"
 let corpsW = "{"^"a:=0"^"}"
 let m_While = deb^condW^corpsW
 let test_executer = executer m_While
-let _  = print_string "END TEST \n \n"
+let _  = print_string "END TEST \n \n \n \n \n \n \n \n\n \n"
 
 
 let _ = print_string "TEST avec a:=1; b:=0; c:=a\n"
@@ -45,7 +45,7 @@ let initb = "b:=0;"
 let initc = "c:=a"
 let m_Assign = inita^initb^initc
 let test_executer = executer m_Assign
-let _ = print_string "END TEST \n \n"
+let _ = print_string "END TEST \n \n \n \n \n \n \n \n\n \n"
 
 
 let _ = print_string "TEST avec If(1){a:=1;b:=a}{a:=1; c:=a}\n"
@@ -54,7 +54,7 @@ let corpsI1 = "{a:=1;b:=a}"
 let corpsI2 = "{a:=1;c:=a}"
 let m_If = condI^corpsI1^corpsI2
 let test_executer = executer m_If
-let _ = print_string "END TEST \n \n"
+let _ = print_string "END TEST \n \n \n \n \n \n \n \n\n \n"
 
 
 let _ = print_string "TEST avec If(0){a:=1;b:=a}{a:=1; c:=a}\n"
@@ -63,7 +63,7 @@ let corpsI1 = "{a:=1;b:=a}"
 let corpsI2 = "{a:=1;c:=a}"
 let m_If = condI^corpsI1^corpsI2
 let test_executer = executer m_If
-let _ = print_string "END TEST \n \n"
+let _ = print_string "END TEST \n \n \n \n \n \n \n \n\n \n"
 
 
 let _ = print_string "TEST avec exemple \n"

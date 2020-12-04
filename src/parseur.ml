@@ -1,36 +1,3 @@
-(*
-On continue le TP de la dernière fois. On cherche toujours
-à analyser des programmes comme
-
-a:=1;
-b:=1;
-c:=1;
-w(a){
- i(c){
-  c:=0;
-  a:=b
- }{
-  b:=0;
-  c:=a
- }
-}
-
-à l'aide d'une grammaire (définissant le langage while):
-
-V pour variable1
-C pour constante
-E pour expression
-I pour instruction
-
-S pour axiome (tradition dans les grammaires)
-L pour liste d'instructions
-
-  S ::= IL | ε
-  L ::= ;S | ε
-  I ::= V:=E | i.E{S}{S} | w.E{S} | ε
-
- *)
-
 module Parseur = 
 struct
 type v = A | B | C | D
@@ -158,8 +125,7 @@ exception EchecCst of exp
 
 let printCst (entier: exp) =
   match entier with
-  |Cst(0) -> print_int 0
-  |Cst(1) -> print_int 1
+  |Cst(a) -> print_int a
   |_ -> raise (EchecCst entier)
 
 let printExp (e: exp) =
@@ -171,7 +137,7 @@ let rec printInstr (i : instr) =
   |Assign(var, value) -> (printVar var) ; print_string " := "; (printExp value) ; print_string "\n"
   |If(exp, i1, i2) -> (print_string "If(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i1) ; (print_string "}{") ; (printInstr i2) ; (print_string "}\n")
   |While(exp, i) -> (print_string "While(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i) ; (print_string "}\n")
-  |Seq(i1,i2) -> (print_string "Seq{"); (printInstr i1); (print_string "}{") ; (printInstr i2); (print_string "}\n") 
+  |Seq(i1,i2) -> (print_string "Seq{\n");(printInstr i1); (print_string "}{\n") ; (printInstr i2); (print_string "}\n") 
 end
 
 

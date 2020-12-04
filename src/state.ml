@@ -54,8 +54,8 @@ module State =
     
     let rec printState (s : state) =
       match s with
-      |End -> print_string "End\n"
-      |State(c,i,s) -> (print_char c) ; (print_string " ") ; (print_int i) ; (print_string " \n") ; (printState s)
+      |End -> print_string "\n"
+      |State(c,i,s) -> (print_char c) ; (print_string " = ") ; (print_int i) ; (print_string "\n") ; (printState s)
           
    (*
     let charToExp (var: char) : (P.exp) =

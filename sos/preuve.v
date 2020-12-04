@@ -182,7 +182,7 @@ Definition Pcarre_inf := While Btrue corps_carre.
 
 (*Exercice 12*)
 
-(*A FINIR*)
+
 Theorem SOS_trans : forall c1 c2 c3, SOS c1 c2 -> SOS c2 c3 -> SOS c1 c3.
 Proof.
   intros c1 c2 c3.
@@ -196,7 +196,7 @@ Qed.
 
 
 (*Exerice 13*)
-Lemma SOS_Pcarre_2_1 : SOS (Inter Pcarre_2 [0;0;1]) (Inter Pcarre_2 [1; 1; 3]).
+Lemma SOS_Pcarre_2 : SOS (Inter Pcarre_2 [0;0;1]) (Inter Pcarre_2 [1; 1; 3]).
 Proof.
   eapply SOS_again. 
   {  apply SOS_While. }
@@ -248,7 +248,7 @@ Proof.
   cbn. apply SOS_stop.
 Qed.
 
-(*On ici arriver a la fin de notre execution puisque nous obtenons un etat Final avec i=2, x=4, y=5*)
+(*On a ici arriver a la fin de notre execution puisque nous obtenons un etat Final avec i=2, x=4, y=5*)
 Theorem SOS_Pcarre_2_fini : SOS (Inter Pcarre_2 [2; 4; 5]) (Final [2; 4; 5]).
 Proof.
    eapply SOS_again. 
@@ -260,10 +260,11 @@ Proof.
   apply SOS_stop.
 Qed.
 
+(*Part de l'etat i=0, x=0, y=1 pour arriver à la fin de l'excution du programme où etat est i=2, x=4, y=5*)
 Theorem SOS_Pcarre_2_fin_V1 : SOS (Inter Pcarre_2 [0;0;1]) (Final [2; 4; 5]).
 Proof.
   apply SOS_trans with  (Inter Pcarre_2 [1; 1; 3]).
-  apply SOS_Pcarre_2_1.
+  apply SOS_Pcarre_2.
   eapply SOS_again.
   { apply SOS_While.  }
   eapply SOS_again.
@@ -291,7 +292,7 @@ Proof. ring. Qed.
 Definition invar_cc n := [n; n*n; S (n+n)].
 
 
-(*On evalue le corps_carre *)
+(*Montre que coprs_carre est terminale *)
 Theorem SOS_corps_carre n : SOS (Inter corps_carre (invar_cc n)) (Final (invar_cc (S n))).
 Proof.
   cbv [corps_carre].
@@ -305,13 +306,14 @@ Proof.
   apply SOS_stop.
 Qed.
 
-(** Celui-ci est court mais difficile. Laisser Admitted au début. *)
+
+(* SOS_Seq on part d'une instruction i1 avec etat s1 pour obtenir une intruction en Séquence*)
 Fixpoint SOS_seq i1 i2 s1 s2 (so : SOS (Inter i1 s1) (Final s2)) :
   SOS (Inter (Seq i1 i2) s1) (Inter i2 s2).
 Proof.
 Admitted.
 
-(** Réutiliser les lemmes précédents (facile et très court). *)
+(* Execute les instructions de corsp_carre pour arriver à la prochaine instruction i avec en etat invar_cc +1 *)
 Lemma SOS_corps_carre_inter n i :
   SOS (Inter (Seq corps_carre i) (invar_cc n)) (Inter i (invar_cc (S n))).
 Proof.
@@ -326,6 +328,8 @@ Proof.
   cbn. rewrite <- Sn_carre. rewrite <- Sn_2. apply SOS_stop.
 Qed.
 
+
+(*trivial*)
 Lemma eqnatb_refl : forall n, eqnatb n n = true.
 Proof.
   intro n.
@@ -334,7 +338,7 @@ Proof.
   - cbn[eqnatb]. apply IHn. 
 Qed.
 
-(** Réutiliser les lemmes précédents (facile). *)
+(** Prouve que pour un etat n Pcarre donne un etat n+1 *)
 Lemma SOS_Pcarre_tour :
   forall n i, eqnatb i n = false ->
   SOS (Inter (Pcarre n) (invar_cc i)) (Inter (Pcarre n) (invar_cc (S i))).
@@ -354,7 +358,7 @@ Proof.
   cbn. rewrite <- Sn_carre. rewrite <- Sn_2. apply SOS_stop.
 Qed.
 
-
+(* Prouve la terminaison de Pcarre avec un etat de départ quelconque *)
 Theorem SOS_Pcarre_n_fini : forall n, SOS (Inter (Pcarre n) (invar_cc n)) (Final (invar_cc n)).
 Proof.
   intro n.
@@ -367,6 +371,7 @@ Proof.
   apply SOS_stop.
 Qed.
 
+(* Applique les théorème définie précemment pour prouver la terminaison de PCarre_2 etat [0;0;1] à etat [2;4;5]*)
 Theorem SOS_Pcarre_2_fin_V2 : SOS (Inter Pcarre_2 [0;0;1]) (Final [2;4;5]).
 Proof.
   eapply SOS_trans.
@@ -377,8 +382,8 @@ Proof.
   { apply SOS_Pcarre_n_fini. }
   apply SOS_stop.
 Qed.
-
-(** On peut dire des choses sur la version qui boucle. *)
+ 
+(** Comme dans SOS_corps_carre_inter on prouve que pour un etat n on arrive à un etat n+1 avec les instruction de Pcrre_inf*)
 Lemma SOS_Pcarre_inf_tour :
   forall i,
   SOS (Inter Pcarre_inf (invar_cc i)) (Inter Pcarre_inf (invar_cc (S i))).
@@ -397,7 +402,7 @@ Proof.
   cbn. rewrite <-Sn_carre. rewrite <- Sn_2. apply SOS_stop.
 Qed.
 
-(*EN DESSOUS A FINIR*)
+(*On cherche a prouver que pour un etat de départ [0;0;1] on arrive a un etat [i; i*i; 1+(i+i)] avec i entier. On effectue anisi une récurrence sur i*)
 Theorem SOS_Pcarre_inf_n :
   forall i,
   SOS (Inter Pcarre_inf [0; 0; 1]) (Inter Pcarre_inf (invar_cc i)).
@@ -414,18 +419,70 @@ Qed.
 (* ================================================================================ *)
 
 
-(** * II *)
-(*
-Inductive config :=
-| Inter : Winstr -> state -> config
-| Final : state -> config.
- *)
 
 (** Définir une version fonctionnelle de SOS_1 *)
 Fixpoint f_SOS_1 (i : Winstr) (s : state) : config :=
-  
-                                              
-Admitted.
+  match i with
+  |Skip => Final s
+  |Assign x a => Final (update s x (evalA a s)) 
+  |Seq i1 i2 => match(f_SOS_1 i1 s) with
+                |Inter i state => Inter (Seq i i2) state
+                |Final state => Inter i2 state
+                end
+                (*  il faut traiter le cas où c'est Final et le cas où c'est Inter *)
+  |If b i1 i2 => match(evalB b s) with (* faux -> i2, vrai -> i1 *)
+                 |false => Inter i2 s
+                 |true => Inter i1 s
+                 end
+  |While b i => Inter (If b (Seq i (While b i)) Skip) s                
+                                
+  end.
+
+ 
+(** PC = pt de contrôle *)
+Definition PC0 := Pcarre_2.
+Eval cbn in (f_SOS_1 PC0 [0;0;1]).
+
+(** Il faut un peu désosser le code pour y retrouver les points de contrôle *)
+Definition PC2 := Seq corps_carre PC0.
+Definition PC1 := If (Bnot (Beqnat Ir (Aco 2))) PC2 Skip.
+
+(** On vérifie la progression *)
+Fact fa1 : f_SOS_1 PC0 [0;0;1] = Inter PC1 [0;0;1]. reflexivity. Qed.
+Eval cbn in (f_SOS_1 PC1 [0;0;1]).
+(** Continuer, on retombe sur PC0 après quelques étapes. *)
+
+Fact fa2 : f_SOS_1 PC1 [0;0;1]= Inter PC2 [0;0;1]. reflexivity. Qed.
+Eval cbn  in (f_SOS_1 PC2 [0;0;1]).
+
+Fact fa3 : f_SOS_1 PC2 [0;0;1] =   Inter (Seq (Seq incrX incrY) PC0) [1; 0; 1]. reflexivity. Qed.
+Eval cbn in (f_SOS_1 (Seq (Seq incrX incrY) PC0) [1; 0; 1] ).
+
+
+Fact fa4: f_SOS_1 (Seq (Seq incrX incrY) PC0) [1;0;1] = Inter (Seq incrY PC0) [1; 1; 1]. reflexivity. Qed.
+Eval cbn in (f_SOS_1  (Seq incrY PC0) [1; 1; 1]). 
+
+Fact fa5 : f_SOS_1 (Seq incrY PC0) [1; 1; 1] = Inter PC0 [1; 1; 3]. reflexivity. Qed.
+
+(** Utilisation sur un lemme SOS *)
+Lemma SOS_Pcarre_2_1er_tour_V1 :
+  SOS (Inter Pcarre_2 [0;0;1]) (Inter Pcarre_2 [1; 1; 3]).
+Proof.
+  change Pcarre_2 with PC0.
+  apply SOS_again with (Inter PC1 [0;0;1]).
+  { apply SOS_While. }
+  apply SOS_again with (Inter PC2 [0;0;1]).
+  { apply SOS_If_true. cbn. reflexivity.   }
+  apply SOS_again with (Inter(Seq (Seq incrX incrY) PC0) [1;0;1]).
+  {apply SOS_Seqi. apply SOS_Seqf. apply SOS_Assign.   }
+  apply SOS_again with ( Inter (Seq incrY PC0) [1; 1; 1] ).
+  {apply SOS_Seqi. apply SOS_Seqf. apply SOS_Assign.  }
+  apply SOS_again with (  Inter PC0 [1; 1; 3]  ).
+  {apply SOS_Seqf. apply SOS_Assign.  }
+   apply SOS_stop.
+Qed.
+
+
 
 (** Court mais non trivial. *)
 Lemma f_SOS_1_corr : forall i s, SOS_1 i s (f_SOS_1 i s).

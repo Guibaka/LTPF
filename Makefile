@@ -1,35 +1,49 @@
 SRC_DIR = src
-LIBS_DIR = includes
-OBJS_DIR = obj
+LIB_DIR = includes
+OBJ_DIR = obj
 BIN_DIR = exec
-EXEC = $(OBJ_DIR) $(BIN_DIR) main
 
 CC = ocamlc
 FLAGS = -g
 
-all : $(EXEC)
+all : directories main
 
-$(LIBS_DIR) :
-	mkdir $(OBJS_DIR)
+directories : $(OBJ_DIR) $(BIN_DIR)
 
-$(OBJS_DIR) :
+$(OBJ_DIR) :
+	mkdir $(OBJ_DIR)
+
+$(BIN_DIR) :
 	mkdir $(BIN_DIR)
+	
+	
+main :  $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo $(OBJ_DIR)/exec.cmo
+	$(CC) $^ -o $(BIN_DIR)/$@
+	
+$(OBJ_DIR)/state.cmi : $(LIB_DIR)/state.mli $(OBJ_DIR)/parseur.cmi
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
-$(EXEC): $(OBJS_DIR)
-	ocamlc -o $(EXEC) $(LIBS_DIR) $(OBJS_DIR)
+$(OBJ_DIR)/parseur.cmi : $(LIB_DIR)/parseur.mli
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
+	
+$(OBJ_DIR)/config.cmi : $(LIB_DIR)/config.mli $(OBJ_DIR)/parseur.cmi $(OBJ_DIR)/state.cmi
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
+	
+$(OBJ_DIR)/state.cmo : $(SRC_DIR)/state.ml $(OBJ_DIR)/state.cmi $(OBJ_DIR)/parseur.cmo
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
-%.cmo: %.ml
-	ocamlc -c $<
+$(OBJ_DIR)/parseur.cmo : $(SRC_DIR)/parseur.ml $(OBJ_DIR)/parseur.cmi
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
-%.cmi: %.mli
-	ocamlc -c $<
+$(OBJ_DIR)/config.cmo : $(SRC_DIR)/config.ml $(OBJ_DIR)/config.cmi $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo 
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
+	
+$(OBJ_DIR)/exec.cmo : $(SRC_DIR)/exec.ml $(OBJ_DIR)/parseur.cmo $(OBJ_DIR)/state.cmo $(OBJ_DIR)/config.cmo
+	$(CC) -c $(FLAGS) $< -I $(OBJ_DIR)/ -o $@
 
-clean:
-	rm -r $(OBJS_DIR)/
+
+
+clean :
+	rm -r $(OBJ_DIR)/
 	rm -r $(BIN_DIR)/
 
-# Ajouter ici les dépendances non automatiques
-parseur.cmo: parseur.cmi
-state.cmo: state.cmi parseur.cmi
-config.cmo: parseur.cmi state.cmi config.cmi
-exec.cmo : parseur.cmi state.cmi config.cmi exec.cmi

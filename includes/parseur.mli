@@ -1,17 +1,16 @@
 module Parseur :
 sig
-  type v
   type c
   type exp
   type instr
+  exception Echec
 
   type 't analist
   type ('r, 't) ranalist
   type ('x,'t) st = 't list -> 'x
 
   val list_of_string : string -> char list
-  exception Echec
-  exception EchecCst of exp
+  
   val (+>) :  ('t analist) -> ('x, 't) st -> ('x, 't) st
   val (++>) :  ('r, 't) ranalist -> ('r -> ('x, 't) st) -> ('x, 't) st
   val return : 'r -> ('r, 't) ranalist

@@ -1,6 +1,10 @@
 module Parseur = 
 struct
-type v = A | B | C | D
+
+
+(*type v = A | B | C | D*)
+
+(*Les type de notre ast*)
 type c = Zero | Un
 type exp = Var of char | Cst of int
 type instr =
@@ -12,8 +16,10 @@ type instr =
 
 (* Le type des fonctions qui épluchent une liste de terminaux *)
 type 't analist = 't list -> 't list
+
 (* Le type des fonctions qui épluchent une liste et rendent un résultat *)
 type ('r, 't) ranalist = 't list -> 'r * 't list  (*  l ---> (elt, suite_liste   )    *)
+
 (* Un type commun pour 't analist ou ('r, 't) ranalist *)
 type ('x, 't) st = 't list -> 'x
 
@@ -42,44 +48,26 @@ let (+|) (a : ('x, 't) st) (b : ('x, 't) st) : ('x, 't) st =
 
 let return : 'r -> ('r, 't) ranalist = fun x l -> (x,l)
 
-
+(* consommer le caractère c *)
 let terminal c : 't analist = fun l -> match l with
                                        | x :: l when x = c -> l
                                        | _ -> raise Echec
 
-(*
-let p_E : ('r, 't) ranalist = fun l ->
-  match l with
-  |'a' :: l -> (Var(A), l)
-  |'b' :: l -> (Var(B), l)
-  |'c' :: l -> (Var(C), l)
-  |'d' :: l -> (Var(D), l)
-  |'1' :: l -> (Cst(Un), l)
-  |'0' :: l -> (Cst(Zero), l)
-  |_ -> raise Echec
 
-let p_V : ('r, 't) ranalist = fun l ->
-  match l with
-  |'a' :: l -> (Var(A), l)
-  |'b' :: l -> (Var(B), l)
-  |'c' :: l -> (Var(C), l)
-  |'d' :: l -> (Var(D), l)
-  |_-> raise Echec
- *)
-
-
-
+(* Parseur d'une constante*)
 let p_C :  ('r, 't) ranalist = fun l ->
   match l with
   |'0'::l -> (Cst(0), l )
   |'1'::l -> (Cst(1), l)
   |_ -> raise Echec
 
+(* Parseur d'une variable*)
 let p_V : ('r, 't) ranalist = fun l ->
   match l with
   |a :: l -> (Var(a), l)
   |_-> raise Echec
 
+(* Parseur d'une expression *)
 let p_E : ('r, 't) ranalist = fun l ->
   try (p_C l) with Echec -> (p_V l)
 
@@ -87,6 +75,8 @@ let p_E : ('r, 't) ranalist = fun l ->
   L ::= ;S | ε
   I ::= V:=E | i.E{S}{S} | w.E{S} | ε*)
 
+(* on définit S, L et I en donnant différentes "règles" au parseur,
+   avec notament une composition de focntion pour p_S                   *)
 let rec p_S : (instr, char) ranalist = fun l->
   l |>
     (p_I ++> fun a -> p_L ++> fun b -> return (Seq(a,b)))
@@ -116,28 +106,51 @@ let rec p_S : (instr, char) ranalist = fun l->
       +|
         (return Skip)
 
+
+(* Print Variable*)
 let printVar (var : exp) =
   match var with
   |Var(a) -> print_char a
   |_ -> raise Echec
 
-exception EchecCst of exp
-
+(* Print Constante*)
 let printCst (entier: exp) =
   match entier with
   |Cst(a) -> print_int a
-  |_ -> raise (EchecCst entier)
+  |_ -> raise Echec
 
+(* Print expression*)
 let printExp (e: exp) =
   try (printVar e) with Echec -> (printCst e)
 
+(* Affiche les instructions *)
 let rec printInstr (i : instr) =
   match i with
   |Skip -> print_string "Skip\n"
   |Assign(var, value) -> (printVar var) ; print_string " := "; (printExp value) ; print_string "\n"
   |If(exp, i1, i2) -> (print_string "If(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i1) ; (print_string "}{") ; (printInstr i2) ; (print_string "}\n")
   |While(exp, i) -> (print_string "While(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i) ; (print_string "}\n")
-  |Seq(i1,i2) -> (print_string "Seq{\n");(printInstr i1); (print_string "}{\n") ; (printInstr i2); (print_string "}\n") 
+  |Seq(i1,i2) -> (print_string "Seq{\n");(printInstr i1); (print_string "}{\n") ; (printInstr i2); (print_string "}\n")
+ 
+(*
+let p_E : ('r, 't) ranalist = fun l ->
+  match l with
+  |'a' :: l -> (Var(A), l)
+  |'b' :: l -> (Var(B), l)
+  |'c' :: l -> (Var(C), l)
+  |'d' :: l -> (Var(D), l)
+  |'1' :: l -> (Cst(Un), l)
+  |'0' :: l -> (Cst(Zero), l)
+  |_ -> raise Echec
+
+let p_V : ('r, 't) ranalist = fun l ->
+  match l with
+  |'a' :: l -> (Var(A), l)
+  |'b' :: l -> (Var(B), l)
+  |'c' :: l -> (Var(C), l)
+  |'d' :: l -> (Var(D), l)
+  |_-> raise Echec
+ *)
 end
 
 

@@ -43,15 +43,16 @@ module State =
       |State(statevar, statevalue, next) ->  if (var = statevar) then State(statevar, value, next)
                                              else State(statevar, statevalue, (change var value next))
 
-
+    (* on exécute une instruction d'affectation i dans l'état s *)
     let execAffect (i : P.instr) (s: state) : (state) =
       match i with
       |P.Assign(Var(variable), valu) -> (match valu with
-                                         |Var(a) -> (change variable (read a s) s)
-                                         |Cst(a) -> (change variable a s)
+                                         |Var(a) -> (change variable (read a s) s) (*Chercher la valeur de la variable puis l'affecter*)
+                                         |Cst(a) -> (change variable a s) (*Affecte directement la valeur puisque c'est un constante*)
                                         )
       |_ -> raise NotFound
     
+    (* affcihe les valeurs des états donc les valeurs de tous les variables*)
     let rec printState (s : state) =
       match s with
       |End -> print_string "\n"

@@ -154,10 +154,13 @@ let printVar (var : exp) =
   |Var(a) -> print_char a
   |_ -> raise Echec
 
+exception EchecCst of exp
+
 let printCst (entier: exp) =
   match entier with
-  |Cst(a) -> print_int a
-  |_ -> raise Echec
+  |Cst(0) -> print_int 0
+  |Cst(1) -> print_int 1
+  |_ -> raise (EchecCst entier)
 
 let printExp (e: exp) =
   try (printVar e) with Echec -> (printCst e)
@@ -165,7 +168,7 @@ let printExp (e: exp) =
 let rec printInstr (i : instr) =
   match i with
   |Skip -> print_string "Skip\n"
-  |Assign(var, value) -> (printVar var) ; print_string " := "; (printCst value) ; print_string "\n"
+  |Assign(var, value) -> (printVar var) ; print_string " := "; (printExp value) ; print_string "\n"
   |If(exp, i1, i2) -> (print_string "If(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i1) ; (print_string "}{") ; (printInstr i2) ; (print_string "}\n")
   |While(exp, i) -> (print_string "While(") ; (printExp exp) ; (print_string "){" ) ; (printInstr i) ; (print_string "}\n")
   |Seq(i1,i2) -> (print_string "Seq{"); (printInstr i1); (print_string "}{") ; (printInstr i2); (print_string "}\n") 

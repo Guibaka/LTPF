@@ -11,6 +11,7 @@ sig
 
   val list_of_string : string -> char list
   exception Echec
+  exception EchecCst of exp
   val (+>) :  ('t analist) -> ('x, 't) st -> ('x, 't) st
   val (++>) :  ('r, 't) ranalist -> ('r -> ('x, 't) st) -> ('x, 't) st
   val return : 'r -> ('r, 't) ranalist

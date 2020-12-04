@@ -6,17 +6,16 @@ module P = Parseur
 module S = State
 module C = Config
 
-
-
-
-
-
-
-
-
+(*
 let rec executer_aux (config : C.config) =
   match config with
   |C.Inter(instr, s) ->  let a = (executer_aux (C.faire_un_pas instr s))  in (C.printConfig a); a
+  |C.Final(s) -> config
+ *)
+
+let executer_aux (config : C.config) =
+  match config with
+  |C.Inter(instr, s) ->  (C.faire_un_pas instr s)
   |C.Final(s) -> config
 
 
@@ -28,22 +27,25 @@ let executer (funct : string) =
 
 
 
-
 let _ = print_string "TEST avec While(1){a:=1}\n"
 let deb = "a:=1;"
 let condW = "while(a)"
 let corpsW = "{"^"a:=0"^"}"
 let m_While = deb^condW^corpsW
-let test_executer = executer m_While
+let test_executer = C.printConfig (executer m_While)
 let _  = print_string "END TEST \n \n"
 
 
-let _ = print_string "TEST avec a:=1; b:=0; c:=1\n"
+let _ = print_string "TEST avec a:=1; b:=1; c:=1\n"
 let inita = "a:=1;"
-let initb = "b:=0;"
+let initb = "b:=1;"
 let initc = "c:=1"
 let m_Assign = inita^initb^initc
-let test_executer = executer m_Assign
+let (instr, l) = P.p_S (P.list_of_string m_Assign)
+let _  = P.printInstr instr
+let config1 = executer m_Assign
+let config2 = executer_aux config1
+let _ = C.printConfig config2
 let _ = print_string "END TEST \n \n"
 
 

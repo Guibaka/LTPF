@@ -25,8 +25,8 @@ module Config =
       |P.Skip -> Final(state)
       |P.Assign(v1, v2) -> let a = (S.execAffect instr state ) in Final(a)
       |P.Seq(i1, i2) -> (match (faire_un_pas i1 state) with
-                         |Inter(i, s) -> Inter(P.Seq(i1,i2), s)
-                         |Final(s) -> Final(s)
+                         |Inter(i, s) -> Inter(P.Seq(i, i2), s)
+                         |Final(s) -> Inter(i2,s)
                         )
       (* ici il faudra évaluer e, si c'est vrai ou faux on fait l'instruction i/i1/i2 *)
       |P.If(e, i1, i2) -> if (eval e state) then Inter(i1, state) else Inter(i2, state)

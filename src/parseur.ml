@@ -138,12 +138,12 @@ let rec p_S : (instr, char) ranalist = fun l->
          fun a-> terminal ':' +> terminal '=' +> p_E ++>
                    fun b -> (return (Assign(a,b))))
       +|
-        (terminal 'i' +>  terminal '(' +> p_E ++>
+        (terminal 'i' +>  terminal 'f' +> terminal '(' +> p_E ++>
            fun a -> terminal ')' +> terminal '{' +> p_S ++>
                       fun b -> terminal '}' +> terminal '{' +> p_S ++>
                                  fun c -> terminal '}' +> (return (If(a,b,c))))
       +|
-        (terminal 'w' +> terminal '(' +> p_E ++>
+        (terminal 'w' +> terminal 'h' +> terminal 'i' +> terminal 'l' +> terminal 'e' +> terminal '(' +> p_E ++>
            fun a -> terminal ')' +> terminal '{' +>  p_S ++>
                       fun b -> terminal '}' +> (return (While(a,b))))
       +|

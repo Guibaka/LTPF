@@ -5,7 +5,7 @@ struct
 (*type v = A | B | C | D*)
 
 (*Les type de notre ast*)
-type c = Zero | Un
+(*type c = Zero | Un*)
 type exp = Var of char | Cst of int
 type instr =
   | Skip
